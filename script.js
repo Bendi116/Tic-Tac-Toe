@@ -1,49 +1,42 @@
 //IIFE facories
 const gameBoard = (function(){
-    const gameBoardArray = [["Q","Q","Q"],["","",""],["","",""]];
+    const gameBoardArray = [["","",""],["","",""],["","",""]];
     const dispalyBoard = () => {for (let i = 0; i < gameBoardArray.length; i++) { console.log(gameBoardArray[i])}};
     const setTile = (symbol, pos) => {gameBoardArray[pos[0]][pos[1]] = symbol}
-    const notFull = () => {
-        for (let i = 0; i < gameBoardArray.length; i++) 
-        { for (let j = 0; j < gameBoardArray.length; j++) {
-            if (gameBoardArray[i][j] ===""){return true;}}
-        }
-            return false;
-    }
-    return {dispalyBoard, setTile, gameBoardArray};
+    const notFull = () => {gameBoardArray.forEach(element=>{element.forEach(e=>{if(e === ""){return true;}})});return false;}
+    
+    return {dispalyBoard, setTile, gameBoardArray, notFull};
 })();
 
 const gameController= (function(){
     let currentTurn = "player1"
-    let hasWin = false;
 
-    //inner function
-    const checkRow = () =>{
+    //inner function[]
+    const compare = (arg1,arg2,arg3) => {return (arg1===arg2)&&(arg1==arg3)}
+    const checkRow = () =>{            
+        let win = false;
         gameBoard.gameBoardArray.forEach(element => {
-            if(element[0] === element[1] === element[2] && element[0] !== ""){return true;}
+            if(compare(element[0],element[1],element[2]) && element[0] !== ""){win = true;}
         });
-        return false;
+        return win;
     }
     const checkCol = () => {
+        let win = false
         gameBoard.gameBoardArray.forEach((element, index) => {
-            if(gameBoard.gameBoardArray[index][0] === gameBoard.gameBoardArray[index][1] === gameBoard.gameBoardArray[index][2] && gameBoard.gameBoardArray[index][0] !== ""){return true}
+            if(compare(gameBoard.gameBoardArray[0][index],gameBoard.gameBoardArray[1][index],gameBoard.gameBoardArray[2][index]) && gameBoard.gameBoardArray[0][index] !== ""){win = true}
         })
-        return false
+        return win;
     }
     const checkDiagnal = () =>{
-        if(gameBoard.gameBoardArray[0][0] === gameBoard.gameBoardArray[1][1] === gameBoard.gameBoardArray[2][2] && gameBoard.gameBoardArray !== ""){return true;}
-        else if(gameBoard.gameBoardArray[0][2] === gameBoard.gameBoardArray[1][1] === gameBoard.gameBoardArray[2][0] && gameBoard.gameBoardArray !== ""){return true;}
+        if( compare(gameBoard.gameBoardArray[0][0],gameBoard.gameBoardArray[1][1],gameBoard.gameBoardArray[2][2]) && gameBoard.gameBoardArray[0][0] !== ""){return true;}
+        else if(compare(gameBoard.gameBoardArray[0][2],gameBoard.gameBoardArray[1][1],gameBoard.gameBoardArray[2][0])&& gameBoard.gameBoardArray[0][2] !== ""){return true;}
         else{return false}
     }
-    
-
 
     const changeTurn = () => {currentTurn = currentTurn === "player1" ? "player2" : "player1"}
     const logCurrTurn = () => {console.log(`${changeTurn} It's your Turn.`)}
-
-    
-    const checkWin = () => { return checkRow() || checkCol() || checkDiagnal()}
-    return {checkWin};
+    const checkWin = () => { return  checkRow() || checkCol() || checkDiagnal()}
+    return {checkWin, logCurrTurn, changeTurn};
 })();
 
 //factories
@@ -63,5 +56,6 @@ function createPlayer(symbol){
 // gameBoard.dispalyBoard()
 
 gameBoard.dispalyBoard()
-console.log(gameController.checkWin())
-console.log((1 === 1) === 1)
+
+let name = prompt("Whats your name ?")
+console.log("Name")
