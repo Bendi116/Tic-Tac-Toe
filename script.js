@@ -76,12 +76,21 @@ const displayGame = (function(){
         coord = coord.map(Number)
         return coord;
     }
-
-
+    const getUserInput = (e) => {
+        let inputCoord = getCoord(e.target.className)
+        if(gameBoard.tileIsFree([inputCoord[0], inputCoord[1]])){
+            gameBoard.setTile("X", [inputCoord[0], inputCoord[1]])
+        }
+        displayBoardOnWindow()    
+    }
+    btns.forEach(element => {
+        element.addEventListener("click", getUserInput)
+    }); 
+    
     const displayBoardOnWindow = () =>{
         btns.forEach(element => {
-            let coord = getCoord(element.className);
-            element.innerText = gameBoard.gameBoardArray[coord[0]][coord[1]];
+            let outputCoord = getCoord(element.className);
+            element.innerText = gameBoard.gameBoardArray[outputCoord[0]][outputCoord[1]];
             
         });
     }
