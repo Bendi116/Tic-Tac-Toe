@@ -1,5 +1,43 @@
+/* 
+  Josh's Custom CSS Reset
+  https://www.joshwcomeau.com/css/custom-css-reset/ 
+*/
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+input, button, textarea, select {
+  font: inherit;
+}
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
 button{
     border: 1px solid black;
     width: 100px;
     height: 100px;
+    display:block;
+    font-size: 36px;
+}
+
+.board{
+    display: grid;
+    grid-template-rows: repeat(3, 100px);
+}
+
+.col{
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
 }
