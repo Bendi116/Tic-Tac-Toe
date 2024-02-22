@@ -1,6 +1,6 @@
 //IIFE facories
 const gameBoard = (function(){
-    const gameBoardArray = [["","Q",""],["","M",""],["Q","",""]];
+    const gameBoardArray = [["","",""],["","",""],["","",""]];
     const dispalyBoard = () => {for (let i = 0; i < gameBoardArray.length; i++) { console.log(gameBoardArray[i])}};
     const tileIsFree = (pos) => {return gameBoardArray[pos[0]][pos[1]] === ""}
     const setTile = (symbol, pos) => {gameBoardArray[pos[0]][pos[1]] = symbol}
@@ -12,8 +12,14 @@ const gameBoard = (function(){
 })();
 
 const gameController= (function(){
-    let currentPlayer = "";
+    let gameEnable = true;
+    const gameInfoDiv = document.querySelector(".game-info")
     let winCondition = false;
+
+    const Player1 = createPlayer("Harry","O")
+    const Player2 = createPlayer("Joe","X")
+    let currentPlayer = Player2
+    gameInfoDiv.innerText = currentPlayer.name
     //inner function[]
     const compare = (arg1,arg2,arg3) => {return (arg1===arg2)&&(arg1==arg3)}
     const checkRow = () =>{            
@@ -35,38 +41,23 @@ const gameController= (function(){
         else if(compare(gameBoard.gameBoardArray[0][2],gameBoard.gameBoardArray[1][1],gameBoard.gameBoardArray[2][0])&& gameBoard.gameBoardArray[0][2] !== ""){return true;}
         else{return false}
     }
-    const logCurrTurn = () => {console.log(`${currentPlayer.name} It's your Turn.`)}
-    const checkWin = () => { if(checkRow() || checkCol() || checkDiagnal()){winCondition = true;}}
+    const checkWin = () => { 
+        if(checkRow() || checkCol() || checkDiagnal()){
+            gameEnable = false;
+            gameInfoDiv.innerText = currentPlayer.name + "Has won the game!"
+        }}
 
-    const play = () =>{
-        const Player1 = createPlayer()
-        const Player2 = createPlayer()
-        currentPlayer = Player2
-
-        const changePlayer = () => {currentPlayer = currentPlayer === Player1 ? Player2 : Player1}
-        let row;
-        let col;
-        while (gameBoard.notFull() && !winCondition) {
-            changePlayer()
-            logCurrTurn();
-            
-            do{
-                row = prompt(`${currentPlayer.name} Which row you want to place your symbol?`)
-                col = prompt(`${currentPlayer.name} Which col you want to place your symbol?`)
-            }while(!gameBoard.tileIsFree([row,col]))
-            
-
-            gameBoard.setTile(currentPlayer.symbol, [row,col])
-            gameBoard.dispalyBoard()
-
-            checkWin()
-            
+    const changePlayer = () => {
+        if(gameEnable){
+            currentPlayer = currentPlayer === Player1 ? Player2 : Player1
+            gameInfoDiv.innerText = currentPlayer.name
         }
-        if(winCondition){alert(`Game ended. ${currentPlayer.name} win the game`)}
-        else{alert("The game is draw.")}
+        }
+    const getGameEnable = () => { return gameEnable}
+    const getPlayerSymbol = () => {return currentPlayer.symbol}
         
-    }
-    return {play};
+       
+    return {changePlayer, checkWin, getPlayerSymbol, getGameEnable};
 })();
 
 const displayGame = (function(){
@@ -77,11 +68,17 @@ const displayGame = (function(){
         return coord;
     }
     const getUserInput = (e) => {
-        let inputCoord = getCoord(e.target.className)
+        if(gameController.getGameEnable()){
+            let inputCoord = getCoord(e.target.className)
         if(gameBoard.tileIsFree([inputCoord[0], inputCoord[1]])){
-            gameBoard.setTile("X", [inputCoord[0], inputCoord[1]])
+            gameBoard.setTile(gameController.getPlayerSymbol(), [inputCoord[0], inputCoord[1]])
         }
+        console.log(gameController.currentPlayer)
+        gameController.checkWin()
+        gameController.changePlayer()
         displayBoardOnWindow()    
+        }
+        
     }
     btns.forEach(element => {
         element.addEventListener("click", getUserInput)
@@ -99,9 +96,7 @@ const displayGame = (function(){
 })();
 
 //factories
-function createPlayer(){
-    let name = prompt("Player Name:")
-    let symbol = prompt(`${name} symbol?`)
+function createPlayer(name ,symbol){
     return{name,symbol};
 };
 
