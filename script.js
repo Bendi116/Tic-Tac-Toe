@@ -23,19 +23,23 @@ const gameController= (function(){
     let gameEnable = false;
     const gameInfoDiv = document.querySelector(".game-info")
     const startBtn = document.querySelector(".start-restart")
+    const player1name = document.querySelector("#name1")
+    const player2name = document.querySelector("#name2")
     
     const startGame = () => {
-        gameBoard.clearBoard()
-        console.log("The game have started.")
         gameEnable = true;
-        gameInfoDiv.innerText = "Game has started!"
+        gameBoard.clearBoard()
         displayGame.displayBoardOnWindow()
+        gameInfoDiv.innerText = "Game has started!"
+        Player1.name  = player1name.value
+        Player2.name  = player2name.value
+        currentPlayer=Player1
         
     }
     startBtn.addEventListener("click", startGame)
 
-    const Player1 = createPlayer("Harry","O")
-    const Player2 = createPlayer("Joe","X")
+    const Player1 = createPlayer(player1name.value,"O")
+    const Player2 = createPlayer(player2name.value,"X")
     let currentPlayer = Player2
     gameInfoDiv.innerText = currentPlayer.name
     //inner function[]
