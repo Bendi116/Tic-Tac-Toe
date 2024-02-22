@@ -1,6 +1,6 @@
 //IIFE facories
 const gameBoard = (function(){
-    const gameBoardArray = [["","",""],["","",""],["","",""]];
+    const gameBoardArray = [["","Q",""],["","M",""],["Q","",""]];
     const dispalyBoard = () => {for (let i = 0; i < gameBoardArray.length; i++) { console.log(gameBoardArray[i])}};
     const tileIsFree = (pos) => {return gameBoardArray[pos[0]][pos[1]] === ""}
     const setTile = (symbol, pos) => {gameBoardArray[pos[0]][pos[1]] = symbol}
@@ -69,6 +69,26 @@ const gameController= (function(){
     return {play};
 })();
 
+const displayGame = (function(){
+    const btns = document.querySelectorAll("button")
+    const getCoord = (str) => {
+        let coord = str.split("-")
+        coord = coord.map(Number)
+        return coord;
+    }
+
+
+    const displayBoardOnWindow = () =>{
+        btns.forEach(element => {
+            let coord = getCoord(element.className);
+            element.innerText = gameBoard.gameBoardArray[coord[0]][coord[1]];
+            
+        });
+    }
+    return{displayBoardOnWindow}
+
+})();
+
 //factories
 function createPlayer(){
     let name = prompt("Player Name:")
@@ -76,6 +96,4 @@ function createPlayer(){
     return{name,symbol};
 };
 
-
-gameController.play()
-console.log("The game was played.")
+displayGame.displayBoardOnWindow()
