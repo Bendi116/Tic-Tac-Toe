@@ -7,14 +7,32 @@ const gameBoard = (function(){
     const notFull = () => {
         let isTrue = false;
         gameBoardArray.forEach(element=>{element.forEach(e=>{if(e === ""){isTrue = true;}})});return isTrue;}
+    const clearBoard = () => {
+        for (let i = 0; i < gameBoardArray.length; i++) {
+            for (let j = 0; j < gameBoardArray[i].length; j++) {
+                gameBoardArray[i][j] = "";
+            }
+            
+        }
+    }
     
-    return {dispalyBoard, setTile, gameBoardArray, notFull, tileIsFree};
+    return {dispalyBoard, setTile, gameBoardArray, notFull, tileIsFree, clearBoard};
 })();
 
 const gameController= (function(){
-    let gameEnable = true;
+    let gameEnable = false;
     const gameInfoDiv = document.querySelector(".game-info")
-    let winCondition = false;
+    const startBtn = document.querySelector(".start-restart")
+    
+    const startGame = () => {
+        gameBoard.clearBoard()
+        console.log("The game have started.")
+        gameEnable = true;
+        gameInfoDiv.innerText = "Game has started!"
+        displayGame.displayBoardOnWindow()
+        
+    }
+    startBtn.addEventListener("click", startGame)
 
     const Player1 = createPlayer("Harry","O")
     const Player2 = createPlayer("Joe","X")
@@ -44,7 +62,7 @@ const gameController= (function(){
     const checkWin = () => { 
         if(checkRow() || checkCol() || checkDiagnal()){
             gameEnable = false;
-            gameInfoDiv.innerText = currentPlayer.name + "Has won the game!"
+            gameInfoDiv.innerText = currentPlayer.name + " has won the game!"
         }}
 
     const changePlayer = () => {
@@ -61,9 +79,11 @@ const gameController= (function(){
 })();
 
 const displayGame = (function(){
-    const btns = document.querySelectorAll("button")
+    const btns = document.querySelectorAll(".tile")
+
     const getCoord = (str) => {
-        let coord = str.split("-")
+        let coord = str.split(" ")
+        coord = coord[0].split("-")
         coord = coord.map(Number)
         return coord;
     }
@@ -73,7 +93,6 @@ const displayGame = (function(){
         if(gameBoard.tileIsFree([inputCoord[0], inputCoord[1]])){
             gameBoard.setTile(gameController.getPlayerSymbol(), [inputCoord[0], inputCoord[1]])
         }
-        console.log(gameController.currentPlayer)
         gameController.checkWin()
         gameController.changePlayer()
         displayBoardOnWindow()    
